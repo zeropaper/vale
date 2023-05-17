@@ -1,16 +1,17 @@
 {
-  "name": "@vvago/vale",
-  "version": "2.26.0",
+  "name": "@vvago/vale-",
+  "version": "2.26.0-alpha.0",
   "description": "download pre-build vale binaries for your platform",
   "main": "index.js",
   "scripts": {
+    "prepack": "rimraf ./bin",
     "postinstall": "node index.js"
   },
   "files": [
     "index.js"
   ],
   "bin": {
-    "vale": "./index.js"
+    "vale": "./bin/vale"
   },
   "repository": {
     "type": "git",
@@ -31,5 +32,8 @@
     "axios": "^1.4.0",
     "tar": "^6.1.15",
     "unzipper": "^0.10.14"
+  },
+  "devDependencies": {
+    "rimraf": "^5.0.0"
   }
 }

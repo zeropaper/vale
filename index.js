@@ -59,10 +59,10 @@ if (!fs.existsSync(outputPath)) {
 (async () => {
   if (!fs.existsSync(outputBin)) await downloadAndExtract();
   // run vale or vale.exe
-  const child = spawn(outputBin, args, { stdio: "inherit" });
-  child.on("exit", (code) => {
-    process.exit(code);
-  });
+  // const child = spawn(outputBin, args, { stdio: "inherit" });
+  // child.on("exit", (code) => {
+  //   process.exit(code);
+  // });
 })().catch((err) => {
   console.error(err);
   process.exit(1);
