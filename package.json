@@ -1,0 +1,24 @@
+{
+  "name": "vale",
+  "version": "2.26.0-alpha",
+  "description": "download pre-build vale binaries for your platform",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/errata-ai/vale.git"
+  },
+  "keywords": [
+    "vale",
+    "linting",
+    "text"
+  ],
+  "author": "Valentin \"zeropaper\" Vago",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/zeropaper/vale/issues"
+  },
+  "homepage": "https://github.com/zeropaper/vale#readme"
+}
