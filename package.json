@@ -31,9 +31,7 @@
   "dependencies": {
     "axios": "^1.4.0",
     "tar": "^6.1.15",
-    "unzipper": "^0.10.14"
-  },
-  "devDependencies": {
+    "unzipper": "^0.10.14",
     "rimraf": "^5.0.0"
   }
 }
