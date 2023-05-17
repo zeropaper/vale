@@ -1,10 +1,16 @@
 {
-  "name": "vale",
-  "version": "2.26.0-alpha",
+  "name": "@vvago/vale",
+  "version": "2.26.0-alpha.1",
   "description": "download pre-build vale binaries for your platform",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "postinstall": "node index.js"
+  },
+  "files": [
+    "index.js"
+  ],
+  "bin": {
+    "vale": "./index.js"
   },
   "repository": {
     "type": "git",
@@ -20,5 +26,10 @@
   "bugs": {
     "url": "https://github.com/zeropaper/vale/issues"
   },
-  "homepage": "https://github.com/zeropaper/vale#readme"
+  "homepage": "https://github.com/zeropaper/vale#readme",
+  "dependencies": {
+    "axios": "^1.4.0",
+    "tar": "^6.1.15",
+    "unzipper": "^0.10.14"
+  }
 }
