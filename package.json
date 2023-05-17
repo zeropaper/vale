@@ -1,6 +1,6 @@
 {
   "name": "@vvago/vale",
-  "version": "2.26.0-alpha.6",
+  "version": "2.26.0",
   "description": "download pre-build vale binaries for your platform",
   "main": "index.js",
   "scripts": {
@@ -14,7 +14,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/errata-ai/vale.git"
+    "url": "git+https://github.com/zeropaper/vale.git"
   },
   "keywords": [
     "vale",
