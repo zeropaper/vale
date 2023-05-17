@@ -1,18 +1,47 @@
-name: Publish Package to NPM
+name: Auto publish
 on:
-  release:
-    types: [published]
+  schedule:
+    - cron: "0 0 * * *" # Every day at midnight
+  workflow_dispatch:
+
 jobs:
-  build:
+  auto-publish:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      # Setup .npmrc file to publish to npm
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
       - uses: actions/setup-node@v3
         with:
           node-version: "16.x"
           registry-url: "https://registry.npmjs.org"
-      - run: npm ci
-      - run: npm publish --access public
+
+      - name: Fetch latest release
+        run: |
+          RELEASE=$(curl --silent "https://api.github.com/repos/errata-ai/vale/releases/latest" | jq -r .tag_name)
+          RELEASE=${RELEASE#v} # Remove 'v' prefix
+          echo "Latest release is $RELEASE"
+          echo "RELEASE=$RELEASE" >> $GITHUB_ENV
+
+      - name: Get npm project version
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          echo "NPM project version is $VERSION"
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+
+      - name: Compare versions and update if needed
+        run: |
+          if [ "${{ env.RELEASE }}" != "${{ env.VERSION }}" ]; then
+              echo "Versions do not match. Latest release is ${{ env.RELEASE }} but npm project version is $VERSION"
+              git config --local user.email "action@github.com"
+              git config --local user.name "GitHub Action"
+              npm version ${{ env.RELEASE }}
+              git commit --allow-empty -am "Update version to ${{ env.RELEASE }}"
+              NODE_AUTH_TOKEN="${{ env.NODE_AUTH_TOKEN }}" 
+              npm publish
+              git push
+            else
+              echo "Versions match"
+            fi
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
