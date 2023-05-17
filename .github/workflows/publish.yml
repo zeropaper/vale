@@ -36,9 +36,9 @@ jobs:
               git config --local user.email "action@github.com"
               git config --local user.name "GitHub Action"
               npm version ${{ env.RELEASE }}
+              npm publish
               git commit --allow-empty -am "Update version to ${{ env.RELEASE }}"
               NODE_AUTH_TOKEN="${{ env.NODE_AUTH_TOKEN }}" 
-              npm publish
               git push
             else
               echo "Versions match"
