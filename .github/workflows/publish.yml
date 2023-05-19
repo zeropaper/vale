@@ -38,8 +38,7 @@ jobs:
               echo "Versions do not match. Latest release is ${{ env.RELEASE }} but npm project version is $VERSION"
               git config --local user.email "action@github.com"
               git config --local user.name "GitHub Action"
-              # npm version ${{ env.RELEASE }}
-              npm version prerelease --preid=alpha
+              npm version ${{ env.RELEASE }}
               # npm version creates a commit, so we need to push it
               git push
               npm publish --access=public
