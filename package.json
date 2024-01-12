@@ -1,6 +1,6 @@
 {
   "name": "@vvago/vale",
-  "version": "3.0.0",
+  "version": "3.0.3",
   "description": "download pre-build vale binaries for your platform",
   "main": "index.js",
   "scripts": {
