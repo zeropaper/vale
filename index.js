@@ -1,11 +1,9 @@
 const axios = require("axios");
+const fs = require("node:fs");
+const path = require("node:path");
 const tar = require("tar");
-const fs = require("fs");
-const path = require("path");
+const unzipper = require("unzipper");
 const pkg = require("./package.json");
-const { spawn } = require("child_process");
-
-const args = process.argv.slice(2);
 
 const isWindows = process.platform === "win32";
 const outputPath = path.join(__dirname, "bin");
@@ -44,7 +42,7 @@ async function downloadAndExtract() {
   return new Promise((resolve, reject) => {
     let pipe;
     if (isWindows) {
-      pipe = response.pipe(unzipper.Extract({ path: outputPath }));
+      pipe = response.data.pipe(unzipper.Extract({ path: outputPath }));
     } else {
       pipe = response.data.pipe(tar.extract({ cwd: outputPath }));
     }
