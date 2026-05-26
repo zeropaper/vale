@@ -20,6 +20,8 @@ jobs:
           node-version-file: '.nvmrc'
           registry-url: "https://registry.npmjs.org"
 
+      - uses: pnpm/action-setup@v6
+
       - name: Install development dependencies
         run: pnpm install --frozen-lockfile --ignore-scripts
 
