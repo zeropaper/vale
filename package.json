@@ -29,7 +29,6 @@
   },
   "homepage": "https://github.com/zeropaper/vale#readme",
   "dependencies": {
-    "axios": "^1.4.0",
     "tar": "^6.1.15",
     "unzipper": "^0.10.14",
     "rimraf": "^5.0.0"

@@ -1,6 +1,7 @@
-const axios = require("axios");
+const https = require("node:https");
 const fs = require("node:fs");
 const path = require("node:path");
+const zlib = require("node:zlib");
 const tar = require("tar");
 const unzipper = require("unzipper");
 const pkg = require("./package.json");
@@ -36,15 +37,40 @@ function getReleaseUrl() {
   }`;
 }
 
+function fetchURL(url) {
+  return new Promise((resolve, reject) => {
+    https.get(url, (response) => {
+      // Handle redirects
+      if (response.statusCode >= 300 && response.statusCode < 400 && response.headers.location) {
+        response.destroy();
+        return fetchURL(response.headers.location).then(resolve).catch(reject);
+      }
+      
+      if (response.statusCode !== 200) {
+        reject(new Error(`HTTP ${response.statusCode}`));
+        return;
+      }
+      
+      // Handle gzip encoding
+      let stream = response;
+      if (response.headers['content-encoding'] === 'gzip') {
+        stream = response.pipe(zlib.createGunzip());
+      }
+      
+      resolve(stream);
+    }).on("error", reject);
+  });
+}
+
 async function downloadAndExtract() {
   const url = getReleaseUrl();
-  const response = await axios.get(url, { responseType: "stream" });
+  const stream = await fetchURL(url);
   return new Promise((resolve, reject) => {
     let pipe;
     if (isWindows) {
-      pipe = response.data.pipe(unzipper.Extract({ path: outputPath }));
+      pipe = stream.pipe(unzipper.Extract({ path: outputPath }));
     } else {
-      pipe = response.data.pipe(tar.extract({ cwd: outputPath }));
+      pipe = stream.pipe(tar.extract({ cwd: outputPath }));
     }
     pipe.on("close", resolve).on("error", reject);
   });
