@@ -27,7 +27,7 @@ jobs:
 
       - name: Fetch latest release
         run: |
-          RELEASE=$(curl --silent "https://api.github.com/repos/errata-ai/vale/releases/latest" | jq -r .tag_name)
+          RELEASE=$(curl --silent "https://api.github.com/repos/vale-cli/vale/releases/latest" | jq -r .tag_name)
           RELEASE=${RELEASE#v} # Remove 'v' prefix
           echo "Latest release is $RELEASE"
           echo "RELEASE=$RELEASE" >> $GITHUB_ENV
