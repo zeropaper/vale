@@ -32,5 +32,6 @@
     "tar": "^6.1.15",
     "unzipper": "^0.10.14",
     "rimraf": "^5.0.0"
-  }
+  },
+  "packageManager": "pnpm@11.1.0"
 }
