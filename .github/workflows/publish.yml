@@ -49,5 +49,3 @@ jobs:
             else
               echo "Versions match"
             fi
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
