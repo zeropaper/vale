@@ -24,6 +24,12 @@
     "text"
   ],
   "author": "Valentin \"zeropaper\" Vago",
+  "contributors": [
+    {
+      "name": "httphyixelnet",
+      "url": "https://github.com/httphypixelnet"
+    }
+  ],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/zeropaper/vale/issues"
