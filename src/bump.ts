@@ -71,7 +71,7 @@ async function main() {
   function fail(entry: Failure | undefined, reason: SkipReason): Failure {
     if (entry) {
       return {
-        skip: entry.skip,
+        skip: reason,
         skip_count: (entry.skip_count ?? 0) + 1,
       };
     }

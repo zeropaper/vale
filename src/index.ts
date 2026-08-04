@@ -8,7 +8,7 @@ import {
 import { mkdirSync, existsSync, createWriteStream } from "node:fs";
 import { basename, join } from "node:path";
 import { finished, pipeline } from "node:stream/promises";
-import { mkdtemp, move, rm } from "fs-extra";
+import { mkdtemp, move, readFileSync, rm, writeFile } from "fs-extra";
 import { tmpdir } from "node:os";
 
 import meta from "@/meta.json";
@@ -16,11 +16,12 @@ import meta from "@/meta.json";
 import pkg from "@/package.json";
 import {
   isWindows,
+  outputBin,
   outputBinName,
   outputPath,
   platformMap,
 } from "@/src/shared";
-
+const hashFile = join(outputPath, "archive.sha256");
 function getPlatform(): UpstreamAsset {
   const { platform, arch } = process;
   const platformKey = `${platform}-${arch}`;
@@ -58,7 +59,18 @@ async function downloadAndExtract() {
     signal: AbortSignal.timeout(60_000),
   });
   if (res.ok && res.body !== null) {
-    if (!res.url.startsWith("https:")) throw new Error("Stopped due to downgrade attempt. Your connection may not be secure.")
+    if (!res.url.startsWith("https:"))
+      throw new Error(
+        "Stopped due to downgrade attempt. Your connection may not be secure.",
+      );
+    if (
+      !/^(?:[a-zA-Z0-9-]+\.)*(?:githubusercontent\.com|github\.com)$/i.test(
+        new URL(res.url).hostname,
+      )
+    )
+      throw new Error(
+        "Connection was redirected outside of GitHub. Your connection may not be secure.",
+      );
     const tempDir = await mkdtemp(join(tmpdir(), "@vvago-vale-"));
     try {
       const hash = createHash("sha256");
@@ -67,7 +79,10 @@ async function downloadAndExtract() {
       let recv = 0;
       for await (const chunk of res.body) {
         recv += chunk.length;
-        if (recv > bin.size) throw new Error(`Download exceeded expected size. \n - Expected: ${bin.size}\n - Reported by server: ${res.headers.get("content-length")}\n`)
+        if (recv > bin.size)
+          throw new Error(
+            `Download exceeded expected size. \n - Expected: ${bin.size}\n - Reported by server: ${res.headers.get("content-length")}\n`,
+          );
         hash.update(chunk);
         if (!out.write(chunk)) {
           await new Promise((resolve) => out.once("drain", resolve));
@@ -89,6 +104,8 @@ async function downloadAndExtract() {
       ) {
         throw new Error("Unable to extract the archive. Report this.");
       }
+
+      await writeFile(hashFile, digest);
     } catch (e) {
       throw e;
     } finally {
@@ -157,6 +174,15 @@ async function extractArchive(
 
 if (!existsSync(outputPath)) {
   mkdirSync(outputPath, { recursive: true });
+}
+if (
+  existsSync(outputBin) &&
+  existsSync(hashFile) &&
+  readFileSync(hashFile, "utf-8") ===
+    (meta.versions as MetaFile["versions"])[`v${pkg.version.split("-").at(0)}`]
+      .bins![getPlatform()].checksum
+) {
+  process.exit(0);
 }
 downloadAndExtract().catch((err) => {
   console.error(err);

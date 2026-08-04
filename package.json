@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "prepack": "tsdown",
-    "postinstall": "true"
+    "postinstall": "node dist/index.cjs"
   },
   "files": [
     "dist/index.cjs"

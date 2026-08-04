@@ -10,8 +10,7 @@ export const platformMap: Record<SupportedPlatforms, UpstreamAsset> = {
 };
 
 export const isWindows = process.platform === "win32";
-
-export const outputPath = join(process.cwd(), "native");
+export const outputPath = join(import.meta.dirname, "..", "native");
 
 export const outputBinName = isWindows ? "vale.exe" : "vale";
 export const outputBin = join(outputPath, outputBinName);
