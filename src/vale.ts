@@ -1,15 +1,15 @@
 #!/usr/bin/env node
 import { spawnSync } from "node:child_process";
-import { join } from "node:path";
-import { outputBinName } from "./shared";
-const result = spawnSync(
-  join(import.meta.dirname, "..", "native", outputBinName),
-  process.argv.slice(2),
-  {
+import { outputBin } from "./shared";
+import { existsSync } from "fs-extra";
+if (existsSync(outputBin)) {
+  const result = spawnSync(outputBin, process.argv.slice(2), {
     stdio: "inherit",
-  },
-);
-if (result.signal) {
-    console.error(`Process failed with signal: ${result.signal}`)
+  });
+  if (result.signal) {
+    console.error(`Process failed with signal: ${result.signal}`);
+  }
+  process.exit(result.status ?? 1);
 }
-process.exit(result.status ?? 1);
+console.error("Missing Vale binary. Did you run the postinstall?");
+process.exit(1);
