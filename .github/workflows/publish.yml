@@ -17,6 +17,7 @@ jobs:
       - uses: pnpm/setup@v1
         with:
           runtime: "bun@1.3.14"
+          install: false
 
       - name: Install development dependencies
         run: pnpm install --frozen-lockfile --ignore-scripts
