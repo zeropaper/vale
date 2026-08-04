@@ -28,6 +28,5 @@ jobs:
           if git diff --quiet -- package.json; then
             echo "No valid Vale release found; skipping npm publish."
           else
-            # pnpm publish --access public --provenance --no-git-checks
-            echo "Publishing to NPM."
+            pnpm publish --access public --provenance --no-git-checks
           fi
