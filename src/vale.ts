@@ -9,6 +9,9 @@ if (existsSync(outputBin)) {
   if (result.signal) {
     console.error(`Process failed with signal: ${result.signal}`);
   }
+  if (result.error) {
+    console.error(`Failed to run Vale, process exited with error: ${result.error.message}`)
+  }
   process.exit(result.status ?? 1);
 }
 console.error("Missing Vale binary. Did you run the postinstall?");

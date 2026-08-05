@@ -61,9 +61,11 @@ async function main() {
       return (await res.json()) as Release;
     } else {
       if (res.status === 403 || res.status === 401 || res.status === 404) {
-        throw new Error("Vale repository unreachable, verify the URL.")
+        throw new Error("Vale repository unreachable, verify the URL.");
       }
-      console.warn(`Failed to get latest version, server responded with code ${res.status} - ${res.statusText}`)
+      console.warn(
+        `Failed to get latest version, server responded with code ${res.status} - ${res.statusText}`,
+      );
       process.exit(0);
     }
   }
@@ -84,16 +86,15 @@ async function main() {
   const metaFile = await getMetaFile();
   const packageFile = await getPackageFile();
   const release = await getLatestVersion();
-
+  const old = metaFile.versions[release.tag_name] as Failure | undefined;
   if (
     release.tag_name in metaFile.versions &&
-    (metaFile.versions[release.tag_name].bins ||
-      metaFile.versions[release.tag_name].skip_count === SKIP_THRESHOLD)
+    (Object.hasOwn(old!, "bins") ||
+      (old as Failure).skip_count >= SKIP_THRESHOLD)
   ) {
     // either we've already released this version or we want to skip it
     return;
   }
-  const old = metaFile.versions[release.tag_name] as Failure | undefined;
   const [verified, result] = await getVerification(release.tag_name, metaFile);
   if (!verified) {
     metaFile.versions[release.tag_name] = fail(old, SkipReason.UNVERIFIED);
@@ -115,7 +116,9 @@ async function main() {
       assetChecksums[arch] = namedSubject.digest.sha256;
     } else {
       metaFile["versions"][release.tag_name] = fail(old, SkipReason.INCOMPLETE);
-      throw new TypeError("Invalid GitHub API response. " + JSON.stringify(namedSubject));
+      throw new TypeError(
+        "Invalid GitHub API response. " + JSON.stringify(namedSubject),
+      );
     }
   }
   if (Object.entries(assetChecksums).length !== VALID_ARCH.size) {
@@ -134,7 +137,7 @@ async function main() {
       bins[arch] = {
         url: asset.url,
         checksum: assetChecksums[arch]!,
-        size: asset.size
+        size: asset.size,
       };
     }
   });

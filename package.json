@@ -9,7 +9,8 @@
     "postinstall": "node dist/index.cjs"
   },
   "files": [
-    "dist/index.cjs"
+    "dist/index.cjs",
+    "bin/vale.cjs"
   ],
   "bin": {
     "vale": "bin/vale.cjs"

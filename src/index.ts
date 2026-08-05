@@ -44,7 +44,7 @@ function getRelease(): Binary {
     );
   }
   const { skip, bins } = (meta.versions as MetaFile["versions"])[version];
-  if (!skip) {
+  if (skip === false) {
     return bins![platform];
   }
   throw new Error("Version should have been skipped by CI - report this.");
@@ -178,6 +178,7 @@ if (!existsSync(outputPath)) {
 if (
   existsSync(outputBin) &&
   existsSync(hashFile) &&
+  typeof (meta.versions as MetaFile["versions"])[`v${pkg.version.split("-").at(0)}`].bins === "object" &&
   readFileSync(hashFile, "utf-8") ===
     (meta.versions as MetaFile["versions"])[`v${pkg.version.split("-").at(0)}`]
       .bins![getPlatform()].checksum
