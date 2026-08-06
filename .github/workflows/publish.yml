@@ -22,13 +22,20 @@ jobs:
       - name: Install development dependencies
         run: pnpm install --frozen-lockfile --ignore-scripts
       - name: SymLink bun
-        run: ln -s "$(which bun)" /usr/loca/bin/node
+        run: ln -s "$(which bun)" /usr/local/bin/node
       - name: Check for new version and commit it to metafile
-        run: bun src/bump.ts
+        run: echo "VERSION=$(bun src/bump.ts)" >> $GITHUB_ENV
+      
       - name: Publish to npm
         run: |
-          if git diff --quiet -- package.json; then
+          if [ -z "${{ env.VERSION }}" ]; then
             echo "No valid Vale release found; skipping npm publish."
           else
-            pnpm publish --access public --provenance --no-git-checks
+            git config --local user.name "Github Action"
+            git config --local user.email "action@github.com"
+            git diff --name-status
+            echo "fahh"
+            git commit -am "Bump: ${{ env.VERSION }}"
+            pnpm publish --access public --provenance --no-git-checks --dry
           fi
+

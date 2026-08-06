@@ -7,6 +7,7 @@ export const platformMap: Record<SupportedPlatforms, UpstreamAsset> = {
   "darwin-x64": "macOS_64-bit",
   "darwin-arm64": "macOS_arm64",
   "win32-x64": "Windows_64-bit",
+  "win32-arm64": "Windows_arm64",
 };
 
 export const isWindows = process.platform === "win32";

@@ -151,14 +151,16 @@ export type UpstreamAsset =
   | "Linux_arm64"
   | "macOS_64-bit"
   | "macOS_arm64"
-  | "Windows_64-bit";
+  | "Windows_64-bit"
+  | "Windows_arm64";
 
 export type SupportedPlatforms =
   | "linux-x64"
   | "linux-arm64"
   | "darwin-x64"
   | "darwin-arm64"
-  | "win32-x64";
+  | "win32-x64"
+  | "win32-arm64";
 
 export type Binary = {
   /** URL to download the binary */
@@ -166,7 +168,7 @@ export type Binary = {
   /** sha256 checksum of the binary */
   checksum: string;
   /** size in bytes of the binary */
-  size: number
+  size: number;
 };
 export const SkipReason = {
   UNVERIFIED: 0,

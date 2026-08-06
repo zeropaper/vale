@@ -155,6 +155,7 @@ async function main() {
   packageFile.version = release.tag_name.replace(/^v/, "");
   writeFileSync("./package.json", JSON.stringify(packageFile, null, 2) + "\n");
   writeFileSync("./meta.json", JSON.stringify(metaFile, null, 2) + "\n");
+  process.stdout.write(release.tag_name.replace(/^v/, ""));
 }
 
 main();
