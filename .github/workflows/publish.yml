@@ -13,41 +13,28 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
-
-      - uses: actions/setup-node@v6
+        uses: actions/checkout@v7
+      - uses: pnpm/setup@v1
         with:
-          node-version-file: '.nvmrc'
-          registry-url: "https://registry.npmjs.org"
-
-      - uses: pnpm/action-setup@v6
+          runtime: "bun@1.3.14"
+          install: false
 
       - name: Install development dependencies
         run: pnpm install --frozen-lockfile --ignore-scripts
-
-      - name: Fetch latest release
+      - name: SymLink bun
+        run: if ! command -v node >/dev/null 2>&1; then ln -s "$(command -v bun)" /usr/local/bin/node; fi
+      - name: Check for new version and commit it to metafile
+        run: echo "VERSION=$(bun src/bump.ts)" >> $GITHUB_ENV
+      
+      - name: Publish to npm
         run: |
-          RELEASE=$(curl --silent "https://api.github.com/repos/vale-cli/vale/releases/latest" | jq -r .tag_name)
-          RELEASE=${RELEASE#v} # Remove 'v' prefix
-          echo "Latest release is $RELEASE"
-          echo "RELEASE=$RELEASE" >> $GITHUB_ENV
+          if [ -z "${{ env.VERSION }}" ]; then
+            echo "No valid Vale release found; skipping npm publish."
+          else
+            git config --local user.name "Github Action"
+            git config --local user.email "action@github.com"
+            git add meta.json
+            git commit -am "Bump: ${{ env.VERSION }}"
+            pnpm publish --access public --provenance --no-git-checks --dry
+          fi
 
-      - name: Get npm project version
-        run: |
-          VERSION=$(node -p "require('./package.json').version")
-          echo "NPM project version is $VERSION"
-          echo "VERSION=$VERSION" >> $GITHUB_ENV
-
-      - name: Compare versions and update if needed
-        run: |
-          if [ "${{ env.RELEASE }}" != "${{ env.VERSION }}" ]; then
-              echo "Versions do not match. Latest release is ${{ env.RELEASE }} but npm project version is $VERSION"
-              git config --local user.email "action@github.com"
-              git config --local user.name "GitHub Action"
-              pnpm version ${{ env.RELEASE }}
-              # pnpm version creates a commit, so we need to push it
-              git push
-              pnpm publish --access=public
-            else
-              echo "Versions match"
-            fi

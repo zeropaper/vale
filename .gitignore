@@ -131,3 +131,6 @@ dist
 
 # vale
 bin/
+native/
+build
+bun.lock

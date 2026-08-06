@@ -1,17 +1,19 @@
 {
   "name": "@vvago/vale",
   "version": "3.17.1",
-  "description": "download pre-build vale binaries for your platform",
-  "main": "index.js",
+  "description": "Download pre-built vale binaries for your platform",
+  "main": "dist/index.cjs",
+  "type": "module",
   "scripts": {
-    "prepack": "rimraf ./bin",
-    "postinstall": "node index.js"
+    "prepack": "tsdown",
+    "postinstall": "node dist/index.cjs"
   },
   "files": [
-    "index.js"
+    "dist/index.cjs",
+    "bin/vale.cjs"
   ],
   "bin": {
-    "vale": "./bin/vale"
+    "vale": "bin/vale.cjs"
   },
   "repository": {
     "type": "git",
@@ -23,15 +25,33 @@
     "text"
   ],
   "author": "Valentin \"zeropaper\" Vago",
+  "contributors": [
+    {
+      "name": "httphyixelnet",
+      "url": "https://github.com/httphypixelnet"
+    }
+  ],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/zeropaper/vale/issues"
   },
   "homepage": "https://github.com/zeropaper/vale#readme",
   "dependencies": {
-    "rimraf": "^6.1.3",
+    "fs-extra": "^11.4.0",
     "tar": "^7.5.15",
-    "unzipper": "^0.12.3"
+    "yauzl": "^3.4.0"
   },
-  "packageManager": "pnpm@11.1.0"
+  "devDependencies": {
+    "@arethetypeswrong/core": "^0.18.5",
+    "@types/fs-extra": "^11.0.4",
+    "@types/node": "^26.1.2",
+    "@types/yauzl": "^3.4.0",
+    "publint": "^0.3.22",
+    "tsdown": "^0.22.14",
+    "typescript": "7.0.2"
+  },
+  "packageManager": "pnpm@11.1.0",
+  "engines": {
+    "node": ">=18.0.0"
+  }
 }
