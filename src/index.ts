@@ -178,6 +178,7 @@ if (!existsSync(outputPath)) {
 if (
   existsSync(outputBin) &&
   existsSync(hashFile) &&
+  typeof (meta.versions as MetaFile["versions"])[`v${pkg.version.split("-").at(0)}`] === "object" &&
   typeof (meta.versions as MetaFile["versions"])[`v${pkg.version.split("-").at(0)}`].bins === "object" &&
   readFileSync(hashFile, "utf-8") ===
     (meta.versions as MetaFile["versions"])[`v${pkg.version.split("-").at(0)}`]

@@ -133,3 +133,4 @@ dist
 bin/
 native/
 build
+bun.lock
