@@ -33,8 +33,7 @@ jobs:
           else
             git config --local user.name "Github Action"
             git config --local user.email "action@github.com"
-            git diff --name-status
-            echo "fahh"
+            git add meta.json
             git commit -am "Bump: ${{ env.VERSION }}"
             pnpm publish --access public --provenance --no-git-checks --dry
           fi

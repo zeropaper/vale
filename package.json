@@ -1,6 +1,6 @@
 {
   "name": "@vvago/vale",
-  "version": "3.17.0",
+  "version": "3.17.1",
   "description": "Download pre-built vale binaries for your platform",
   "main": "dist/index.cjs",
   "type": "module",
