@@ -22,7 +22,7 @@ jobs:
       - name: Install development dependencies
         run: pnpm install --frozen-lockfile --ignore-scripts
       - name: SymLink bun
-        run: ln -s "$(which bun)" /usr/local/bin/node
+        run: if ! command -v node >/dev/null 2>&1; then ln -s "$(command -v bun)" /usr/local/bin/node; fi
       - name: Check for new version and commit it to metafile
         run: echo "VERSION=$(bun src/bump.ts)" >> $GITHUB_ENV
       
