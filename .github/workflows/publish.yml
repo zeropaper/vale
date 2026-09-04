@@ -11,21 +11,20 @@ permissions:
 jobs:
   auto-publish:
     runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ github.token }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v7
       - uses: pnpm/setup@v1
         with:
-          runtime: "bun@1.3.14"
+          runtime: "bun@1.4"
           install: false
 
       - name: Install development dependencies
         run: pnpm install --frozen-lockfile --ignore-scripts
-      - name: SymLink bun
-        run: if ! command -v node >/dev/null 2>&1; then ln -s "$(command -v bun)" /usr/local/bin/node; fi
       - name: Check for new version and commit it to metafile
         run: echo "VERSION=$(bun src/bump.ts)" >> $GITHUB_ENV
-      
       - name: Publish to npm
         run: |
           if [ -z "${{ env.VERSION }}" ]; then
@@ -35,6 +34,6 @@ jobs:
             git config --local user.email "action@github.com"
             git add meta.json
             git commit -am "Bump: ${{ env.VERSION }}"
-            pnpm publish --access public --provenance --no-git-checks --dry
+            pnpm publish --access public --provenance --no-git-checks
           fi
 
