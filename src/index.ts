@@ -52,10 +52,14 @@ function getRelease(): Binary {
 
 async function downloadAndExtract() {
   const bin = getRelease();
+  const headers: Record<string, string> = {
+    Accept: "application/octet-stream",
+  };
+  if (process.env.GITHUB_TOKEN) {
+    headers.Authorization = `Bearer ${process.env.GITHUB_TOKEN}`;
+  }
   const res = await fetch(bin.url, {
-    headers: {
-      Accept: "application/octet-stream",
-    },
+    headers,
     signal: AbortSignal.timeout(60_000),
   });
   if (res.ok && res.body !== null) {
