@@ -111,14 +111,11 @@ async function main() {
     const namedSubject = subject as NamedSubject;
     if (namedSubject.name.endsWith("_checksums.txt")) continue;
     const match = namedSubject.name.match(ASSET_REGEX);
+    // Releases also carry assets this package does not ship, such as the wasm
+    // build and grammars; a missing platform archive fails the check below.
     if (match && VALID_ARCH.has(match[1] as UpstreamAsset)) {
       const arch = match[1] as UpstreamAsset;
       assetChecksums[arch] = namedSubject.digest.sha256;
-    } else {
-      metaFile["versions"][release.tag_name] = fail(old, SkipReason.INCOMPLETE);
-      throw new TypeError(
-        "Invalid GitHub API response. " + JSON.stringify(namedSubject),
-      );
     }
   }
   if (Object.entries(assetChecksums).length !== VALID_ARCH.size) {

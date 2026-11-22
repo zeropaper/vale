@@ -24,7 +24,11 @@ jobs:
       - name: Install development dependencies
         run: pnpm install --frozen-lockfile --ignore-scripts
       - name: Check for new version and commit it to metafile
-        run: echo "VERSION=$(bun src/bump.ts)" >> $GITHUB_ENV
+        # Assigned on its own line so a failing bump.ts fails the step; inside
+        # 'echo' the exit code of the substitution is lost.
+        run: |
+          version="$(bun src/bump.ts)"
+          echo "VERSION=${version}" >> "$GITHUB_ENV"
       - name: Publish to npm
         run: |
           if [ -z "${{ env.VERSION }}" ]; then
@@ -35,5 +39,6 @@ jobs:
             git add meta.json
             git commit -am "Bump: ${{ env.VERSION }}"
             pnpm publish --access public --provenance --no-git-checks
+            git push
           fi
 
